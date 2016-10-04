@@ -1,0 +1,10 @@
+/usr/local/DynacNG/project/current/log/pgSlonRun_*.log {
+    su dynac root
+    rotate 7
+    daily
+    missingok
+    notifempty
+    copytruncate 
+    nocompress
+}
+

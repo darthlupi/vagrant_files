@@ -1,0 +1,20 @@
+---
+
+#Any custom repos will need to be configured here
+- name: Configure common repos 
+  yum_repository: 
+    name: "kapsch-repo"
+    description: "Repo for common Kapsch RPM files"
+    baseurl: "{{ common_kapsch_repo_url  }}"
+    enabled: true 
+    gpgcheck: no
+    proxy: _none_
+
+- name: Configure the Kapsch Centos Repo when teh OS is RHEL.
+  copy: src=etc/yum.repos.d/kapsch-centos-7.repo dest=/etc/yum.repos.d/
+  when: ansible_distribution == 'RedHat'
+
+- name: Download and install the gpg key for Centos when the OS is RHEL
+  shell: rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7
+  when: ansible_distribution == 'RedHat'
+

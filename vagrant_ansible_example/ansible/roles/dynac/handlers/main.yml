@@ -1,0 +1,5 @@
+---
+# handlers file for dynac
+#
+- name: restart postgres
+  service: name={{ dynac_pg_service }} state=restarted

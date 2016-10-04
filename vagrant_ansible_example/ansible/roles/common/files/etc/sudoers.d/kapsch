@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+User_Alias  USERS_KAPSCH=deploybot
+USERS_KAPSCH  ALL=(ALL) NOPASSWD: ALL
+%dynac  ALL=(ALL)       NOPASSWD: ALL

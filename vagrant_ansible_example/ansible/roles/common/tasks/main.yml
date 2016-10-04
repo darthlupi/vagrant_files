@@ -1,0 +1,9 @@
+---
+# tasks file for common system configuration
+- include: security.yml
+- include: sysctl.yml
+- include: repos.yml
+- include: users.yml
+- include: sudo.yml
+- include: install.yml
+

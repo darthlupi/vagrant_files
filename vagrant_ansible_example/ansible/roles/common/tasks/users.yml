@@ -1,0 +1,63 @@
+---
+#Place all common user configurations in this file
+#
+#
+#Deploybot user - This user is responsible for automated deployments
+- name: Create Deploybot Group
+  group: name=deploybot gid=2002 state=present
+- name: Create Deploybot User
+  user: name=deploybot comment="Deployment User" uid=2002 group=deploybot groups=dynac
+- name: Setup .ssh directory for Deploybot User
+  copy: src=home/deploybot/.ssh dest=/home/deploybot owner=deploybot group=deploybot mode=0644
+- name: Set permissions on the deploybot .ssh files...
+  file: path=/home/deploybot/.ssh/{{ item }} mode=0600
+  with_list:
+    - authorized_keys
+  changed_when: False
+#Dynac User - This user is a service account for Kapsch services.
+#It is the also the required user for performing remote code checkout and building.
+- name: Create Dynac Group
+  group: name=dynac gid=2001 state=present
+- name: Create Dynac User
+  user: name=dynac comment="Dynac User" uid=2001 group=dynac password=$1$5JNZtB6Y$PLF0t3Z/jJ6A9FGFLwWWq.
+
+- name: Setup scripts and keys for Dynac User
+  copy: src=home/dynac dest=/home/ owner=dynac group=dynac mode=0644
+
+- name: Set permissions on the .ssh files...
+  file: path=/home/dynac/.ssh/{{ item }} mode=0600
+  with_list:
+    - authorized_keys
+    - id_dsa
+    - id_dsa.pub
+  changed_when: False
+
+- name: Make sure subversion is installed
+  yum: name=subversion state=latest  
+  
+#This whole section is a little questionable.
+#I am making sure the local ansible directory exists and is owned by dynac.
+#This allows me to check out the Dynac build scripts from SVN into the  and distribute them from the ansible host.
+- name: Make sure the local dynac_build_svn_dir is owned by dynac
+  file: path={{ dynac_build_svn_dir }} owner=dynac group=dynac mode=0744
+  delegate_to: 127.0.0.1
+  
+- name: Take care of that pesky hostkey checking with svn ssh
+  shell: ssh -oStrictHostKeyChecking=no svn.transdyn.com "echo hello"
+  become: yes
+  become_user: dynac
+  delegate_to: 127.0.0.1
+  
+- name: Check out the build scripts for Dynac user
+  subversion: repo={{ dynac_build_svn_repo }} dest={{ dynac_build_svn_dir }} force=yes export=yes
+  become: yes
+  become_user: dynac
+  delegate_to: 127.0.0.1
+  when: dync_build_checkout_files == true
+
+- name: Make build scripts executable
+  file:  path=/home/dynac/{{ item }} mode=0754
+  with_list:
+    - dynac_build.sh
+    - dynac_svn.sh
+  changed_when: False

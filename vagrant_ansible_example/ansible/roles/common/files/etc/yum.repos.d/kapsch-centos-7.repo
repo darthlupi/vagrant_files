@@ -1,0 +1,20 @@
+# Kapsch CentOS-Base.repo
+#
+#  This repo is used to enable RHEL systems to get off the ground without having access directly to
+#
+[base]
+name=Kapsch CentOS-$releasever - Base
+mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=os&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#released updates
+[updates]
+name=Kapsch CentOS-$releasever - Updates
+mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=updates&infra=$infra
+#baseurl=http://mirror.centos.org/centos/7/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+

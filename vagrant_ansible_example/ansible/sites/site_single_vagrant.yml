@@ -1,0 +1,10 @@
+---
+# file: site_single_vagrant.yml
+# Description: This site file is designed to setup a developer desktop
+#              using ansible inside of a Vagrant Box.
+
+- hosts: "localhost"
+  roles:
+    - { role: common, common_kapsch_repo_url: "http://172.20.151.152/pub/repos/kapsch_dynac" }
+    - desktop
+    - { role: dynac, dynac_pg_version: "94" }

@@ -1,0 +1,4 @@
+---
+# defaults file for Dynac
+# postgres variables
+dynac_pg_version: "94"

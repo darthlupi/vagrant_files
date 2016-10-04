@@ -1,0 +1,15 @@
+---
+# postgres 95 variables
+dynac_pg_packages: 
+  - postgresql95
+  - postgresql95-contrib
+  - postgresql95-devel
+  - postgresql95-libs
+  - postgresql95-server
+  - slony1-95
+  - python-psycopg2
+
+dynac_pg_version: "95"
+dynac_pg_home: "/var/lib/pgsql/9.5"
+dynac_pg_service: "postgresql-9.5"
+dynac_pg_bin: "/usr/pgsql-9.5/bin"

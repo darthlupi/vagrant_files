@@ -1,0 +1,15 @@
+---
+#Install standard packages to support a dynac installation
+#
+- name: Install 3rd Party packages
+  yum: name={{ item }} state=installed
+  with_list:
+    - dnp3
+    - iec61850
+    - javatools
+    - protobuf-2.4.1.el7-1 
+    - swish-e
+- name: Install httpd
+  yum: name=httpd state=installed
+- name: Configure httpd
+  service: name=httpd state=started enabled=true

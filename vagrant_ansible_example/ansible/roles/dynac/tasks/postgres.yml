@@ -1,0 +1,75 @@
+---
+
+- include_vars: ../vars/postgres_94_vars.yml
+  when: dynac_pg_version == "94"
+
+- include_vars: ../vars/postgres_95_vars.yml
+  when: dynac_pg_version == "95"
+
+#Configure postgres for Dynac
+- name: Install postgres
+  yum: name={{ item }} state=present
+  with_list: "{{ dynac_pg_packages }}"
+
+
+#Perform DB initiliaztion check
+- name: Verify if a DB initialize is required
+  stat: path={{ dynac_pg_home }}/data/base
+  register: dynac_db_dir
+
+#Initialize database 
+- name: Initialize the database
+  shell: "{{ dynac_pg_bin }}/initdb -D {{ dynac_pg_home }}/data/ -U postgres"
+  become: yes
+  become_user: postgres
+  register: db_initialized
+  when: dynac_db_dir.stat.exists == false 
+
+#Copy configuration files
+- name: Copy postgresql.conf
+  template: src=postgresql.conf dest={{ dynac_pg_home }}/data/postgresql.conf mode=0600 owner=postgres group=postgres
+  notify: restart postgres
+
+- name: Copy pg_hba.conf
+  copy: src=pg_hba.conf dest={{ dynac_pg_home }}/data/pg_hba.conf mode=0600 owner=postgres group=postgres
+  notify: restart postgres
+
+#Services
+- name: Enable and start postgres service
+  service: name={{ dynac_pg_service }} state=started enabled=yes
+
+#Create tables space directory structure
+- name: Create tablespace directory structure
+  file: path={{ item }} state=directory owner=postgres group=postgres
+  with_list:
+  - '{{ dynac_pg_home }}/data/dynac'
+  - '/history/historian'
+  - '/var/lib/pgsql/var'
+  - '/var/lib/pgsql/scripts'
+
+#Configure postgres users
+- name: Create dynac user
+  postgresql_user: name=dynac password='transdyn'
+- name: Set password on postgres user
+  postgresql_user: name=postgres password='transdyn'
+
+#Copy the sql scripts to the scripts directory 
+- name: Copy create db sql
+  template: src=psql_createdb.sql dest=/var/lib/pgsql/scripts mode=0644 owner=postgres group=postgres
+  when: db_initialized.changed == true
+
+#Run create create db and set password scripts
+#There are not yet feature in the postgres db module to create tables spaces.
+- name: Run create database scripts
+  command: "/usr/bin/psql -f /var/lib/pgsql/scripts/psql_createdb.sql"
+  become: yes
+  become_user: postgres
+  when: db_initialized.changed == true
+
+#Configure logrotate
+- name: Configure logroate 
+  copy: src=pgslonrun dest=/etc/logrotate.d/pgslonrun mode=0644 owner=root group=root
+
+#Debug
+#- name: Just do some variable debug stuff :)
+#  debug: var=db_initialized

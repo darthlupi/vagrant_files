@@ -1,0 +1,20 @@
+---
+# defaults file for common
+# Yum repo configuration
+
+
+common_kapsch_repo_url: "http://172.30.21.5/pub/repos/kapsch_dynac"
+
+common_ntp_servers:
+  - 172.20.148.10 
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
+#Variables for maintaining dynac build scripts
+dynac_build_svn_repo: svn+ssh://svn.transdyn.com/work/databases/svn/others/trunk/support/devops/dynac_build/
+dynac_build_svn_dir: /etc/ansible/roles/common/files/home/dynac/
+#Set to true if you want to check out the latest dynac build scripts with this run
+dync_build_checkout_files: true
+#Set the time zone
+common_timezone: /US/Eastern
