@@ -26,7 +26,7 @@ mkdir /home/deploybot/.ssh
 chmod 0700 /home/deploybot/.ssh
 chown deploybot:deploybot /home/deploybot/.ssh
 cat > /home/deploybot/.ssh/authorized_keys << EOF
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAQxObvYfHBuZ3bqxKRBIPhZpSrACa3ZemV7EiFAg5lcIpK6Yo2tCYNWXjSrCL7LkkwyGRO58WDR4nF0Uhdq0lN2KX9E31+WdchI6Dd9xv5PKvsU9BLhk3U9vrqqEAYK/755+YSPm1ltdnZGABXwV9ruAsHVrtnIdrkXLXPTHGGbSFFSHkQX1Ex3rqPrKXCmhiHTVjBqDRSaaV6d59v0kBAPBUpqBVfxSgsEZtPoLXb8LjghjelpVrVfAuX+jktSWEtbVIHcGYSlzUNJf7BTL0hpst/cAjJvnqrPoMLPrNjrqxPL13Y06aOLap+D6gEVwMS33tFsVTvslrymizM1Kv deploybot@foreman-staging.kapsch.local
+ssh-rsa THE_KEY_YOU_WILL_USE
 EOF
 chmod 0600 /home/deploybot/.ssh/authorized_keys
 chown deploybot:deploybot /home/deploybot/.ssh/authorized_keys
@@ -34,9 +34,8 @@ chown deploybot:deploybot /home/deploybot/.ssh/authorized_keys
 sed -i '/requiretty/d' /etc/sudoers
 #Setup base sudo file
 cat > /etc/sudoers.d/kapsch << EOF
-User_Alias  USERS_KAPSCH=deploybot
-USERS_KAPSCH  ALL=(ALL) NOPASSWD: ALL
-%dynac  ALL=(ALL)       NOPASSWD: ALL
+User_Alias  SUPER_USERS=deploybot
+SUPER_USERS  ALL=(ALL) NOPASSWD: ALL
 EOF
 chmod 0640 /etc/sudoers.d/kapsch
 #
@@ -64,9 +63,9 @@ Vagrant.configure(2) do |config|
 
 
   #Configure the proxy settings
-  config.proxy.http     = "http://172.20.151.157:8090"
-  config.proxy.https    = "http://172.20.151.157:8090"
-  config.proxy.no_proxy = "localhost,127.0.0.1,172.0.0.0,172.20.151.152,kapsch.local"
+  config.proxy.http     = "http://172.20.1.1:8090"
+  config.proxy.https    = "http://172.20.1.1:8090"
+  config.proxy.no_proxy = "localhost,127.0.0.1,172.0.0.0,192.168.0.0,mydomain.com"
   
 
   # Every Vagrant development environment requires a box. You can search for
