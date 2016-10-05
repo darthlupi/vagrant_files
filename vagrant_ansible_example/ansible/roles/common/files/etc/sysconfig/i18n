@@ -1,5 +1,0 @@
-# {{ ansible_managed }}
-LANG="en_US"
-SUPPORTED="en_US:en"
-SYSFONT="lat0-sun16"
-SYSFONTACM="iso01"

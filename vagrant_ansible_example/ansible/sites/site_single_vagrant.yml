@@ -5,6 +5,4 @@
 
 - hosts: "localhost"
   roles:
-    - { role: common, common_kapsch_repo_url: "http://172.20.151.152/pub/repos/kapsch_dynac" }
-    - desktop
-    - { role: dynac, dynac_pg_version: "94" }
+    - example_role 

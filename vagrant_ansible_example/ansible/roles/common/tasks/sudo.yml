@@ -1,5 +1,0 @@
----
-#Configure default sudo
-#
-- name: Copy default sudoers
-  copy: src=etc/sudoers.d/kapsch dest=/etc/sudoers.d/kapsch mode=0644

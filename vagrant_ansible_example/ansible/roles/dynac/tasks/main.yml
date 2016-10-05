@@ -1,4 +1,0 @@
----
-# tasks file for dynac
- - include: install.yml
- - include: postgres.yml
