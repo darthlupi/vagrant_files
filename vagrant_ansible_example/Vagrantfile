@@ -8,6 +8,7 @@ date > /tmp/vagrant_provisioned_at
 #######################
 #Setup Ansible
 yum install -y epel-release
+yum clean all
 yum install -y ansible
 chmod -R 777 /etc/ansible
 
@@ -17,27 +18,7 @@ chmod -R 777 /etc/ansible
 ############################################
 #Setup users
 #
-echo "Setting up the initial users..."
-#We are only setting up JUST enough access to allow the deploybot user to login and sudo.
-sudo useradd dynac -u 2001
-sudo useradd deploybot -G dynac -u 2002
-#Setup private key login for deployment user...
-mkdir /home/deploybot/.ssh
-chmod 0700 /home/deploybot/.ssh
-chown deploybot:deploybot /home/deploybot/.ssh
-cat > /home/deploybot/.ssh/authorized_keys << EOF
-ssh-rsa THE_KEY_YOU_WILL_USE
-EOF
-chmod 0600 /home/deploybot/.ssh/authorized_keys
-chown deploybot:deploybot /home/deploybot/.ssh/authorized_keys
-#Modify suders file
-sed -i '/requiretty/d' /etc/sudoers
-#Setup base sudo file
-cat > /etc/sudoers.d/kapsch << EOF
-User_Alias  SUPER_USERS=deploybot
-SUPER_USERS  ALL=(ALL) NOPASSWD: ALL
-EOF
-chmod 0640 /etc/sudoers.d/kapsch
+#Moved to ansible
 #
 #END OF USERS SETUP 
 ##############################################
@@ -51,7 +32,7 @@ SCRIPT
 Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |v|
-    v.name = "kapsch_dynac"
+    v.name = "ansible_configured_vm"
   end
 
 
